@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from './supabaseClient'; // Adjust the path to your Supabase config
-import CrewmateForm from './CrewmateForm';  // Form for adding new crewmates
-import CrewmateList from './CrewmateList';  // List to display crewmates
+import { supabase } from './supabaseClient';
+import CrewmateForm from './CrewmateForm';
+import CrewmateList from './CrewmateList';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import CrewmateDetail from './CrewmateDetail';
 import './App.css';
 
 const App = () => {
   const [crewmates, setCrewmates] = useState([]);
 
-  // Fetch existing crewmates from Supabase on initial render
+  // fetch existing crewmates from Supabase on initial render
   useEffect(() => {
     const fetchCrewmates = async () => {
       const { data, error } = await supabase
@@ -25,15 +27,26 @@ const App = () => {
   }, []);
 
   return (
-    <div className="App">
-      <h1>Destiny Team Builder</h1>
+    <Router>
+      <div className="App">
+        <h1>Destiny Fireteam Builder</h1>
 
-      {/* Form to add new crewmates */}
-      <CrewmateForm crewmates={crewmates} setCrewmates={setCrewmates} />
+        {/* form to add new crewmates */}
+        <CrewmateForm crewmates={crewmates} setCrewmates={setCrewmates} />
 
-      {/* List of all crewmates */}
-      <CrewmateList crewmates={crewmates} setCrewmates={setCrewmates} />
-    </div>
+        {/* routes for navigation */}
+        <Routes>
+          <Route 
+            path="/" 
+            element={<CrewmateList crewmates={crewmates} setCrewmates={setCrewmates} />} 
+          />
+          <Route 
+            path="/crewmates/:id" 
+            element={<CrewmateDetail crewmates={crewmates} setCrewmates={setCrewmates} />} 
+          />
+        </Routes>
+      </div>
+    </Router>
   );
 };
 
